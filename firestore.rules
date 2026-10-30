@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidNews(data) {
+      return data.keys().hasAll(['title', 'content', 'authorId', 'createdAt']) &&
+             data.keys().size() <= 8 &&
+             data.title is string && data.title.size() <= 200 &&
+             data.content is string && data.content.size() <= 5000 &&
+             data.authorId == request.auth.uid &&
+             data.createdAt == request.time;
+    }
+
+    function isValidCommentLike(data) {
+      return data.keys().hasAll(['rowNum', 'userId', 'createdAt']) &&
+             data.keys().size() <= 6 &&
+             data.rowNum is int &&
+             data.userId == request.auth.uid &&
+             data.createdAt == request.time;
+    }
+
+    function isValidReaction(data) {
+      return data.keys().hasAll(['targetId', 'targetType', 'emoji', 'userId', 'createdAt']) &&
+             data.keys().size() <= 8 &&
+             data.targetId is string &&
+             (data.targetType == 'news' || data.targetType == 'comment') &&
+             data.emoji is string &&
+             data.userId == request.auth.uid &&
+             data.createdAt == request.time;
+    }
+
+    match /news/{newsId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidNews(request.resource.data);
+      allow update, delete: if isSignedIn() && isOwner(resource.data.authorId);
+    }
+
+    match /comment_likes/{likeId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidCommentLike(request.resource.data);
+      allow delete: if isSignedIn() && isOwner(resource.data.userId);
+    }
+
+    match /reactions/{reactionId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidReaction(request.resource.data);
+      allow delete: if isSignedIn() && isOwner(resource.data.userId);
+    }
+
+    match /schedule_swaps/{swapId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+    }
+
+    match /sheets_cache/{cacheId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

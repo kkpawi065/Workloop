@@ -1,0 +1,349 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Mali:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Quicksand", "Mali", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: 
+    radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.9) 0%, transparent 40%),
+    radial-gradient(circle at 10% 50%, rgba(244, 114, 182, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at 95% 45%, rgba(252, 165, 203, 0.5) 0%, transparent 45%),
+    radial-gradient(circle at 85% 90%, rgba(168, 85, 247, 0.4) 0%, transparent 40%),
+    radial-gradient(circle at 5% 95%, rgba(147, 51, 234, 0.25) 0%, transparent 35%),
+    linear-gradient(135deg, #ffd3ec 0%, #ebd7fd 45%, #d1e2ff 100%) !important;
+  color: #0a0f1d; /* Elite, ultra-deep dark slate for perfect premium light readability */
+  font-family: var(--font-sans);
+  transition: background 0.5s ease;
+}
+
+.dark body {
+  background: 
+    radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 10% 50%, rgba(244, 114, 182, 0.25) 0%, transparent 45%),
+    radial-gradient(circle at 95% 45%, rgba(252, 165, 203, 0.2) 0%, transparent 45%),
+    radial-gradient(circle at 85% 90%, rgba(168, 85, 247, 0.3) 0%, transparent 40%),
+    radial-gradient(circle at 5% 95%, rgba(147, 51, 234, 0.22) 0%, transparent 35%),
+    linear-gradient(135deg, #180922 0%, #110d29 45%, #051428 100%) !important;
+  color: #ffffff !important;
+}
+
+@layer base {
+  * {
+    accent-color: var(--color-purple-500);
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 2px;
+    transition: all 0.2s;
+  }
+  
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    background: rgba(0,0,0,0.05);
+  }
+
+  .dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+}
+
+@media print {
+  html, body {
+    background-color: #fff !important;
+    color: #000 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Hide all generic workspace layout components, sidebars, dashboard headers */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Make sure the schedule sheet container is visible */
+  .printable-schedule,
+  .printable-schedule *,
+  .printable-target,
+  .printable-target * {
+    visibility: visible;
+  }
+
+  /* Format printable element to cover entire A4 width */
+  .printable-schedule,
+  .printable-target {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #1e293b !important;
+  }
+
+  /* Ensure standard background/border printing on most devices */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* Deepened font colors for high-contrast elite legibility (เข้มขึ้นตามสไตล์ Premium High-Contrast) */
+:not(.dark) {
+  .text-slate-300 { color: #57657a !important; }
+  .text-slate-400 { color: #3b4b60 !important; }
+  .text-slate-500 { color: #1e293b !important; }
+  .text-slate-600 { color: #0f172a !important; }
+  .text-slate-700 { color: #0a1120 !important; }
+  .text-slate-800 { color: #020617 !important; }
+  .text-slate-900 { color: #000000 !important; }
+  
+  /* Inputs, selects, and placeholder text */
+  ::placeholder {
+    color: #475569 !important;
+    opacity: 0.9 !important;
+  }
+  select, input, textarea {
+    color: #070c18 !important;
+  }
+}
+
+/* Dark mode clear reading style overrides to keep it gorgeous and highly readable */
+.dark {
+  .text-slate-600 { color: #cbd5e1 !important; }
+  .text-slate-500 { color: #cbd5e1 !important; }
+  .text-slate-400 { color: #e2e8f0 !important; }
+  .text-slate-350 { color: #f1f5f9 !important; }
+  .text-slate-300 { color: #f8fafc !important; }
+  .text-slate-200 { color: #ffffff !important; }
+  .text-slate-100 { color: #ffffff !important; }
+  
+  /* Inputs, selects, and placeholder text in dark mode */
+  ::placeholder {
+    color: #94a3b8 !important;
+    opacity: 0.95 !important;
+  }
+  select, input, textarea {
+    color: #f8fafc !important;
+  }
+}
+
+/* Acrylic Glassmorphism Core Overrides for Ultra Premium design */
+:not(.dark) {
+  /* Panels, cards, sections */
+  .bg-white,
+  .bg-white\/80,
+  .rounded-\[2rem\]:not(button), 
+  .rounded-\[2\.5rem\]:not(button),
+  .rounded-3xl:not(button),
+  .rounded-2xl:not(button):not(select):not(input) {
+    background-color: rgba(255, 255, 255, 0.42) !important;
+    backdrop-filter: blur(20px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+    border-color: rgba(255, 255, 255, 0.65) !important;
+    box-shadow: 0 8px 32px rgba(236, 72, 153, 0.05), 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.8),
+                inset -1px -1px 2px rgba(255, 255, 255, 0.2) !important;
+  }
+
+  /* Specific select and inputs inside white fields */
+  select, input:not([type="checkbox"]):not([type="radio"]), textarea {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border-color: rgba(255, 255, 255, 0.55) !important;
+  }
+}
+
+.dark {
+  /* Panels, cards, sections inside dark mode */
+  .bg-slate-900,
+  .bg-slate-900\/80,
+  .rounded-\[2rem\]:not(button), 
+  .rounded-\[2\.5rem\]:not(button),
+  .rounded-3xl:not(button),
+  .rounded-2xl:not(button):not(select):not(input) {
+    background-color: rgba(15, 23, 42, 0.45) !important; /* Semi-transparent slate-900 for clear acrylic */
+    backdrop-filter: blur(24px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.30),
+                inset 1px 1px 1px rgba(255, 255, 255, 0.08),
+                inset -1px -1px 1px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* Secondary inputs/selects on dark dashboards */
+  .bg-slate-800,
+  select, input:not([type="checkbox"]):not([type="radio"]), textarea {
+    background-color: rgba(30, 41, 59, 0.15) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+  }
+}
+
+/* Base Acrylic Helper Panels */
+.glass-panel {
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+}
+
+:not(.dark) .glass-panel {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.04), inset 1px 1px 0px rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .glass-panel {
+  background-color: rgba(15, 23, 42, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 1px 1px 0px rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Custom Scrollbar Styling - Craft Selection Cotton Candy & Candy Glow (ชมพู-ม่วงพาสเทล) */
+::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 9999px !important;
+}
+
+/* Light Theme: Cotton Candy Gradation with hover/click color states */
+::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #FFB7D5 0%, #D8B4FE 100%) !important; /* ชมพู-ม่วงพาสเทล แสนน่ารัก */
+  border-radius: 9999px !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 1px 4px rgba(236, 72, 153, 0.15) !important;
+}
+
+/* Light Theme Hover: Sweet Pink & Juicy Violet (เด่นสว่างสดใสแสนหวาน) */
+::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #FF5EA4 0%, #8B5CF6 100%) !important; /* Sweet Pink & Juicy Violet */
+  box-shadow: 0 2px 8px rgba(255, 94, 164, 0.45) !important;
+}
+
+/* Light Theme Active: Click adjustment to hot intense cotton glow */
+::-webkit-scrollbar-thumb:active,
+.custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(135deg, #EC4899 0%, #6D28D9 100%) !important; /* ปรับสีเมื่อคลิกสะกดใจ */
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.6) !important;
+}
+
+/* Dark Theme: Candy Glow - soft neon pastel reflecting gentle soothing screen glow */
+.dark ::-webkit-scrollbar-thumb,
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgba(255, 148, 219, 0.45) 0%, rgba(177, 140, 248, 0.45) 100%) !important; /* นีออนพาสเทลอ่อน ๆ อ่อนโยนต่อสายตา */
+  border: 1.5px solid rgba(15, 23, 42, 0.6) !important;
+  box-shadow: 0 0 6px rgba(177, 140, 248, 0.25) !important;
+}
+
+/* Dark Theme Hover: Bright Sweet Neon Glow */
+.dark ::-webkit-scrollbar-thumb:hover,
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, rgba(255, 64, 163, 0.85) 0%, rgba(168, 85, 247, 0.85) 100%) !important; /* Sweet Pink & Juicy Violet Neon */
+  box-shadow: 0 0 10px rgba(255, 64, 163, 0.6) !important;
+}
+
+/* Dark Theme Active: Click adjustment in Dark Mode */
+.dark ::-webkit-scrollbar-thumb:active,
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(135deg, #FF2E93 0%, #A855F7 100%) !important; /* นีออนพาสเทลสะท้อนสว่างสดใสเมื่อคลิกแคนดี้เปล่งประกาย */
+  box-shadow: 0 0 14px rgba(255, 46, 147, 0.9) !important;
+}
+
+/* Mobile & Tablet custom scrollbars are extremely thin (2px instead of 3.5px) and blend instantly */
+:root {
+  --display-zoom: 1;
+}
+
+html {
+  font-size: calc(112% * var(--display-zoom)) !important; /* Increased base scale to 112% for great readability and comfort */
+  transition: font-size 0.2s ease;
+}
+
+@media (max-width: 1024px) {
+  /* Only slight reduction to 95% on smaller formats so elements stay perfectly readable without breaking containers */
+  html {
+    font-size: calc(95% * var(--display-zoom)) !important;
+  }
+  
+  /* Readability-enhanced scaled metrics for pixel-measure elements */
+  .text-\[6px\] { font-size: 5.8px !important; }
+  .text-\[7px\] { font-size: 6.8px !important; }
+  .text-\[8px\] { font-size: 7.8px !important; }
+  .text-\[8\.5px\] { font-size: 8.2px !important; }
+  .text-\[9px\] { font-size: 8.8px !important; }
+  .text-\[9\.5px\] { font-size: 9.2px !important; }
+  .text-\[10px\] { font-size: 9.6px !important; }
+  .text-\[10\.5px\] { font-size: 10.2px !important; }
+  .text-\[11px\] { font-size: 10.6px !important; }
+  .text-\[11\.5px\] { font-size: 11px !important; }
+  .text-\[12px\] { font-size: 11.6px !important; }
+  .text-\[13px\] { font-size: 12.6px !important; }
+  .text-\[14px\] { font-size: 13.6px !important; }
+
+  /* Fully proportional sizes to guarantee a highly readable text rendering without line wrapping issues */
+  .text-xs { font-size: 0.72rem !important; }
+  .text-sm { font-size: 0.82rem !important; }
+  .text-base { font-size: 0.92rem !important; }
+  .text-lg { font-size: 1.02rem !important; }
+  .text-xl { font-size: 1.15rem !important; }
+  .text-2xl { font-size: 1.35rem !important; }
+  .text-3xl { font-size: 1.65rem !important; }
+  .text-4xl { font-size: 2.1rem !important; }
+
+  /* Tighten paddings, headers, and container margins to save screen estate and fit text */
+  .printable-schedule {
+    padding: 1rem !important;
+    border-radius: 1.5rem !important;
+    gap: 1rem !important;
+  }
+
+  /* Make sure select items and text input fields look incredibly professional and don't overflow panels */
+  select, input:not([type="checkbox"]):not([type="radio"]) {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    border-radius: 0.75rem !important;
+  }
+
+  /* Minimize layout container gaps and bento flex spacings */
+  .gap-6 { gap: 0.75rem !important; }
+  .gap-8 { gap: 1rem !important; }
+  .gap-12 { gap: 1.25rem !important; }
+  
+  /* Retighten rounded corners & paddings of cards to stay elegant in smaller formats */
+  [class*="rounded-[1.8rem]"] {
+    border-radius: 1.2rem !important;
+    padding: 1rem !important;
+  }
+  [class*="rounded-[2.5rem]"] {
+    border-radius: 1.5rem !important;
+  }
+  [class*="rounded-[2rem]"] {
+    border-radius: 1.2rem !important;
+  }
+  [class*="rounded-3xl"] {
+    border-radius: 1.2rem !important;
+  }
+}

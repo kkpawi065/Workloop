@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "news": {
+      "title": "News Post",
+      "description": "Internal announcements and news posts for the dashboard.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Headline of the news" },
+        "content": { "type": "string", "description": "Body content of the news" },
+        "authorName": { "type": "string", "description": "Display name of the author" },
+        "authorId": { "type": "string", "description": "Firebase UID of the author" },
+        "important": { "type": "boolean", "description": "Whether this news should be highlighted or shown in a popup" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp of creation" }
+      },
+      "required": ["title", "content", "authorId", "createdAt"]
+    },
+    "comment_like": {
+      "title": "Comment Like",
+      "description": "Like record on a specific comment/row evaluation item.",
+      "type": "object",
+      "properties": {
+        "rowNum": { "type": "integer", "description": "The spreadsheet row number of the comment" },
+        "userId": { "type": "string", "description": "Firebase UID of the user who liked" },
+        "userEmail": { "type": "string", "description": "Email of the user who liked" },
+        "userName": { "type": "string", "description": "Name of the user who liked" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when liked" }
+      },
+      "required": ["rowNum", "userId", "createdAt"]
+    },
+    "reaction": {
+      "title": "Emoji Reaction",
+      "description": "Emoji reaction on a news post or an evaluation comment.",
+      "type": "object",
+      "properties": {
+        "targetId": { "type": "string", "description": "Target identifier, e.g. news id or comment row number as string" },
+        "targetType": { "type": "string", "description": "Type of target: news or comment" },
+        "emoji": { "type": "string", "description": "The actual emoji, e.g. 👍, ❤️, 😄, 🎉, etc." },
+        "userId": { "type": "string", "description": "Firebase UID of the user reacting" },
+        "userEmail": { "type": "string", "description": "Email of the user reacting" },
+        "userName": { "type": "string", "description": "Name of the user reacting" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when reacted" }
+      },
+      "required": ["targetId", "targetType", "emoji", "userId", "createdAt"]
+    },
+    "schedule_swap": {
+      "title": "Schedule Swap",
+      "description": "A real-time class schedule trade/swap proposal.",
+      "type": "object",
+      "properties": {
+        "swapType": { "type": "string", "description": "Type of swap: teacher or time" },
+        "day1": { "type": "string" },
+        "period1": { "type": "string" },
+        "item1": { "type": "any", "description": "Details of class 1 or null if vacant" },
+        "day2": { "type": "string" },
+        "period2": { "type": "string" },
+        "item2": { "type": "any", "description": "Details of class 2 or null if vacant" },
+        "tA": { "type": "string" },
+        "tB": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp of creation" }
+      },
+      "required": ["swapType", "day1", "period1", "day2", "period2", "tA", "tB", "createdAt"]
+    },
+    "sheets_cache": {
+      "title": "Spreadsheet Cache",
+      "description": "Cached database data from Google Sheets.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "values": { "type": "array" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["title", "values"]
+    }
+  },
+  "firestore": {
+    "news": {
+      "schema": "news",
+      "description": "Collection of global news announcements."
+    },
+    "comment_likes/{likeId}": {
+      "schema": "comment_like",
+      "description": "Collection of likes on qualitative evaluation comments, identified by row number and user id."
+    },
+    "reactions/{reactionId}": {
+      "schema": "reaction",
+      "description": "Collection of emoji reactions on news posts and evaluation comments."
+    },
+    "schedule_swaps/{swapId}": {
+      "schema": "schedule_swap",
+      "description": "Collection of real-time schedule swaps across teachers and periods."
+    },
+    "sheets_cache/{cacheId}": {
+      "schema": "sheets_cache",
+      "description": "Firestore backup cache of the Google Sheets data."
+    }
+  }
+}
