@@ -32,7 +32,11 @@ serverless function in `netlify/functions/api.mts`, so the site no longer needs 
 
 ## Behaviour changes compared with the AI Studio server
 
-- AI endpoints now require a real Google sign-in. Guest (anonymous) sessions can view cached data but cannot use AI.
+- AI endpoints now require a real Google sign-in. Guest (anonymous) sessions cannot use AI.
+- Guest mode now shows **sample data only**. It no longer reads the real evaluation data from the Firestore
+  cache or from the browser, and `firestore.rules` blocks guests from reading or writing `sheets_cache`.
+- Signing out, or opening Guest mode, clears the sheet copies, AI analyses and Google token stored in the
+  browser, so nothing is left behind on a shared computer.
 - `/api/analyze` was removed (the app never called it).
 - The Sheets proxy cache is now separate per user token.
 - Errors from Gemini are logged on the server instead of being returned to the browser.

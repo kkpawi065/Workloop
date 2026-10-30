@@ -72,10 +72,9 @@ service cloud.firestore {
     }
 
     // Holds copies of the teacher-observation and student-evaluation sheets.
-    // Guests may read it (read-only mode); only Google-signed-in users may write it.
+    // Guests (anonymous sessions) must not see or change real evaluation data.
     match /sheets_cache/{cacheId} {
-      allow read: if isSignedIn();
-      allow write: if isGoogleUser();
+      allow read, write: if isGoogleUser();
     }
   }
 }

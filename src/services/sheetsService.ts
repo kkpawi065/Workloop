@@ -80,17 +80,9 @@ export const fetchSpreadsheetData = async (accessToken: string, spreadsheetId: s
     }
   };
 
-  // Check if guest token - if yes, skip Google Sheets API and load cached data
+  // Guest sessions only ever see sample data: never the real sheets, the shared Firestore cache
+  // or anything cached in this browser.
   if (accessToken === "GUEST_SESSION_TOKEN") {
-    console.log(`Guest token detected. Fetching ${spreadsheetId} directly from Firestore cache...`);
-    const firestoreData = await getFirestoreCachedData();
-    if (firestoreData) {
-      return firestoreData;
-    }
-    const cachedData = getCachedData();
-    if (cachedData) {
-      return cachedData;
-    }
     const mockSpreadsheet = getDefaultMockSpreadsheet(spreadsheetId, gid);
     return {
       ...mockSpreadsheet,

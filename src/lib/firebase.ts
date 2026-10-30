@@ -79,8 +79,22 @@ export const googleSignIn = async (): Promise<{ user: User; accessToken: string 
   }
 };
 
+// Removes data this app keeps in the browser (sheet copies, AI analyses, Google token) so it is
+// not left behind for the next person on a shared computer.
+export const clearLocalPrivateData = () => {
+  try {
+    const prefixes = ['g_sheet_cache_', 'workloop_ai_analysis_', 'workloop_access_token'];
+    Object.keys(localStorage)
+      .filter((key) => prefixes.some((prefix) => key.startsWith(prefix)))
+      .forEach((key) => localStorage.removeItem(key));
+  } catch (error) {
+    console.warn('Could not clear local data:', error);
+  }
+};
+
 export const anonymousSignIn = async (): Promise<{ user: User; accessToken: string } | null> => {
   try {
+    clearLocalPrivateData();
     const result = await signInAnonymously(auth);
     const guestToken = "GUEST_SESSION_TOKEN";
     cachedAccessToken = guestToken;
@@ -111,5 +125,5 @@ export const getAccessToken = async (): Promise<string | null> => {
 export const logout = async () => {
   await auth.signOut();
   cachedAccessToken = null;
-  localStorage.removeItem('workloop_access_token');
+  clearLocalPrivateData();
 };

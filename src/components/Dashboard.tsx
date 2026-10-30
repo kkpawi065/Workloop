@@ -909,8 +909,12 @@ export default function Dashboard({ accessToken, user, lang, setLang, theme, set
   const scheduleId = '13wfOLqX81c6GAU81KpwZIgZFWIhIdQtc';
   const scheduleGid = '1950881023';
 
+  // Guest sessions only see sample data (see fetchSpreadsheetData and firestore.rules).
+  const isGuestSession = accessToken === "GUEST_SESSION_TOKEN";
+
   // Synchronous cache loader for 0ms visual load response
   const getLocalSheetCache = (sheetId: string, gid?: string): SpreadsheetData | null => {
+    if (isGuestSession) return null;
     try {
       const cacheKey = `g_sheet_cache_${sheetId}${gid ? `_${gid}` : ''}`;
       const cachedStr = localStorage.getItem(cacheKey);
@@ -1122,6 +1126,9 @@ export default function Dashboard({ accessToken, user, lang, setLang, theme, set
 
   // Real-time Firestore synchronization listener for both datasets
   useEffect(() => {
+    // Guests must not subscribe to the real evaluation data.
+    if (isGuestSession) return;
+
     const teacherDocId = `${teacherId}`;
     const studentDocId = `${studentId}${studentGid ? `_${studentGid}` : ''}`;
 
@@ -1179,7 +1186,7 @@ export default function Dashboard({ accessToken, user, lang, setLang, theme, set
       unsubTeacher();
       unsubStudent();
     };
-  }, [viewMode]);
+  }, [viewMode, isGuestSession]);
 
   useEffect(() => {
     const rotationTimer = setInterval(() => {
@@ -1937,7 +1944,7 @@ export default function Dashboard({ accessToken, user, lang, setLang, theme, set
     setScheduleLoading(false);
 
     // Compute sync error states instead of blocking the user with invasive alert popups
-    const hasError = !!(accessToken && (
+    const hasError = !!(accessToken && !isGuestSession && (
       tResult?.error || 
       sResult?.error || 
       schResult?.error || 
@@ -3729,8 +3736,39 @@ export default function Dashboard({ accessToken, user, lang, setLang, theme, set
 
         <div className={cn("flex-1 overflow-auto p-2 pb-24 sm:p-4 lg:p-6 transition-colors duration-500 bg-transparent relative z-10")}>
           {/* Live status check banners - Show on critical emergency fallback (when no cache is available and only mock data is shown) only */}
-          {data?.isMock && (
-            <motion.div 
+          {data?.isMock && isGuestSession && (
+            <div
+              className={cn(
+                "mb-6 p-4 sm:p-5 rounded-3xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4",
+                theme === 'dark' ? "bg-amber-950/40 border-amber-900/50 text-amber-100" : "bg-amber-50/95 border-amber-200 text-amber-900"
+              )}
+            >
+              <div>
+                <h4 className="font-extrabold text-sm sm:text-base tracking-tight mb-1">
+                  {lang === 'th' ? "โหมดผู้เข้าชม: กำลังแสดงข้อมูลตัวอย่าง" : "Guest mode: showing sample data"}
+                </h4>
+                <p className="text-xs font-medium opacity-85 leading-relaxed max-w-2xl">
+                  {lang === 'th'
+                    ? "ข้อมูลประเมินจริงเปิดให้เฉพาะผู้ที่เข้าสู่ระบบด้วยบัญชี Google ที่ได้รับอนุญาตเท่านั้น"
+                    : "Real evaluation data is only available to signed-in Google accounts."}
+                </p>
+              </div>
+              <button
+                onClick={handleReauth}
+                disabled={isReauthorizing}
+                className={cn(
+                  "w-full sm:w-auto px-5 py-2.5 text-xs font-black rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer",
+                  theme === 'dark' ? "bg-amber-500 text-slate-900 hover:bg-amber-600" : "bg-amber-600 text-white hover:bg-amber-700"
+                )}
+              >
+                <RefreshCw className={cn("w-3.5 h-3.5", isReauthorizing && "animate-spin")} />
+                {lang === 'th' ? "เข้าสู่ระบบด้วย Google" : "Sign in with Google"}
+              </button>
+            </div>
+          )}
+
+          {data?.isMock && !isGuestSession && (
+            <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               className={cn(
