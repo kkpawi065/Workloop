@@ -92,6 +92,18 @@ export const anonymousSignIn = async (): Promise<{ user: User; accessToken: stri
   }
 };
 
+// Firebase ID token for our own /api endpoints (AI features). Empty when nobody is signed in.
+export const getAuthHeaders = async (): Promise<Record<string, string>> => {
+  const user = auth.currentUser;
+  if (!user) return {};
+  try {
+    return { Authorization: `Bearer ${await user.getIdToken()}` };
+  } catch (error) {
+    console.warn('Could not get Firebase ID token:', error);
+    return {};
+  }
+};
+
 export const getAccessToken = async (): Promise<string | null> => {
   return cachedAccessToken;
 };

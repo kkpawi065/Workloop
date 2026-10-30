@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bot, Send, Trash2, Sparkles, User, HelpCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
+import { getAuthHeaders } from '../lib/firebase';
 
 interface Message {
   id: string;
@@ -107,6 +108,7 @@ I am here to help you analyze schedules, student evaluations, and school teachin
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(await getAuthHeaders()),
         },
         body: JSON.stringify({
           history: historyPayload,

@@ -79,7 +79,7 @@ import {
   Bot
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
-import { logout, db, googleSignIn } from '../lib/firebase';
+import { logout, db, googleSignIn, getAuthHeaders } from '../lib/firebase';
 import { 
   collection, 
   query, 
@@ -2528,7 +2528,7 @@ export default function Dashboard({ accessToken, user, lang, setLang, theme, set
     try {
       const response = await fetch('/api/analyze-teacher', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(await getAuthHeaders()) },
         body: JSON.stringify({
           teacherName: selectedRadarTeacher === 'All' ? 'All Teachers (Overview)' : selectedRadarTeacher,
           averageScores: aspectScores,

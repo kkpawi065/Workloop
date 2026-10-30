@@ -15,6 +15,12 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    // Guest sessions are anonymous Firebase users: anyone with the link can create one.
+    // Real Google sign-in is required for anything that changes shared data.
+    function isGoogleUser() {
+      return isSignedIn() && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+
     function isValidNews(data) {
       return data.keys().hasAll(['title', 'content', 'authorId', 'createdAt']) &&
              data.keys().size() <= 8 &&
@@ -65,8 +71,11 @@ service cloud.firestore {
       allow create, update, delete: if isSignedIn();
     }
 
+    // Holds copies of the teacher-observation and student-evaluation sheets.
+    // Guests may read it (read-only mode); only Google-signed-in users may write it.
     match /sheets_cache/{cacheId} {
-      allow read, write: if isSignedIn();
+      allow read: if isSignedIn();
+      allow write: if isGoogleUser();
     }
   }
 }
